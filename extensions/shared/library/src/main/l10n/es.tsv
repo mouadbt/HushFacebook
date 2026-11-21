@@ -3109,3 +3109,7 @@ Show full names	Mostrar nombres completos
 A long name at the top of a post wraps onto the next line instead of ending in "...". A name that fits still takes one line.	Un nombre largo en la parte superior de una publicación sigue en la línea siguiente en lugar de terminar en "...". Un nombre que cabe sigue ocupando una sola línea.
 Dark box behind feed video names	Recuadro oscuro detrás de los nombres en videos del feed
 When a video in your feed has the poster's name on top of the video, that name sits on the same dark box. A change shows on the posts drawn after it.	Cuando un video de tu feed muestra el nombre de quien publica encima del video, ese nombre aparece sobre el mismo recuadro oscuro. El cambio se ve en las publicaciones que se cargan después.
+# context: Accent color choice that follows the phone's wallpaper color
+Material You	Material You
+# context: summary of the Accent color row at the Material You choice
+Links, buttons, switches and the selected tab follow the accent color your phone takes from your wallpaper. Restart Facebook to see the change.	Los enlaces, botones, interruptores y la pestaña seleccionada siguen el color de énfasis que tu teléfono toma del fondo de pantalla. Reinicia Facebook para ver el cambio.

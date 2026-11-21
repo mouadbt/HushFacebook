@@ -2399,12 +2399,20 @@ public final class HushfacebookPreferenceFragment extends AbstractPreferenceFrag
         row.setDialogTitle(L10n.t("Accent color"));
         // Android's own Cancel follows the activity's language, as the other lists' did.
         row.setNegativeButtonText(L10n.t("Cancel"));
-        AccentColor.Preset[] choices = AccentColor.Preset.values();
-        CharSequence[] entries = new CharSequence[choices.length];
-        CharSequence[] values = new CharSequence[choices.length];
-        for (int i = 0; i < choices.length; i++) {
-            entries[i] = choices[i] == AccentColor.Preset.CUSTOM ? L10n.t("Custom color") : accentLabel(choices[i], materialYou);
-            values[i] = choices[i].name();
+        // The wallpaper choice needs Android 12's palette, and under the Material You theme Facebook
+        // blue already means the wallpaper's accent, so the choice would only repeat it.
+        List<AccentColor.Preset> choices = new ArrayList<>();
+        for (AccentColor.Preset choice : AccentColor.Preset.values()) {
+            if (choice == AccentColor.Preset.WALLPAPER
+                    && (materialYou || !AccentColor.wallpaperAvailable())) continue;
+            choices.add(choice);
+        }
+        CharSequence[] entries = new CharSequence[choices.size()];
+        CharSequence[] values = new CharSequence[choices.size()];
+        for (int i = 0; i < choices.size(); i++) {
+            entries[i] = choices.get(i) == AccentColor.Preset.CUSTOM
+                    ? L10n.t("Custom color") : accentLabel(choices.get(i), materialYou);
+            values[i] = choices.get(i).name();
         }
         row.setEntries(entries);
         row.setEntryValues(values);
@@ -2415,6 +2423,8 @@ public final class HushfacebookPreferenceFragment extends AbstractPreferenceFrag
     /** What the list and the sentences about it call [accent]: Facebook blue is the wallpaper's under Material You. */
     static String accentLabel(AccentColor.Preset accent, boolean materialYou) {
         switch (accent) {
+            case WALLPAPER:
+                return L10n.t("Material You");
             case TEAL:
                 return L10n.t("Teal");
             case GREEN:
@@ -2451,7 +2461,7 @@ public final class HushfacebookPreferenceFragment extends AbstractPreferenceFrag
 
     private static String accentSummaryBase(AccentColor.Preset accent, boolean materialYou) {
         if (materialYou) {
-            if (accent == AccentColor.Preset.FACEBOOK) {
+            if (accent == AccentColor.Preset.FACEBOOK || accent == AccentColor.Preset.WALLPAPER) {
                 return L10n.t("Material You uses your wallpaper's accent. Pick a color to use it instead.");
             }
             return L10n.f("Material You uses %1$s in place of your wallpaper's accent. Restart Facebook to see the change.",
@@ -2459,6 +2469,10 @@ public final class HushfacebookPreferenceFragment extends AbstractPreferenceFrag
         }
         if (accent == AccentColor.Preset.FACEBOOK) {
             return L10n.t("Links, buttons, switches and the selected tab keep Facebook's blue.");
+        }
+        if (accent == AccentColor.Preset.WALLPAPER) {
+            return L10n.t("Links, buttons, switches and the selected tab follow the accent color your phone takes from "
+                    + "your wallpaper. Restart Facebook to see the change.");
         }
         return L10n.f("Links, buttons, switches and the selected tab use %1$s instead of Facebook's blue. Restart Facebook "
                 + "to see the change.",

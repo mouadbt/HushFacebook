@@ -169,6 +169,19 @@ public final class AccentResources {
     }
 
     /**
+     * Forgets the wallpaper choice's answer and loader when Android reports a new wallpaper palette,
+     * so the next activity is coloured from the new one. The old loader comes off every Resources
+     * this class made, as {@link #recolour} would have removed it.
+     */
+    static synchronized void forgetWallpaper() {
+        if (latest != null && latest.preset == Preset.WALLPAPER) latest = null;
+        ResourcesLoader old = LOADERS.remove(Preset.WALLPAPER);
+        YOU_LOADERS.remove(Preset.WALLPAPER);
+        if (old == null) return;
+        for (Resources resources : ON_ASSETS.values()) resources.removeLoaders(old);
+    }
+
+    /**
      * Filled in by the patch: the colour resources Facebook's FDS styles give a token, where they
      * hold one of Facebook's blues, as {@code "id=colour[/night]:TOKEN,TOKEN;..."} with the id and
      * colours in hex, sorted by id, and the tokens sorted.

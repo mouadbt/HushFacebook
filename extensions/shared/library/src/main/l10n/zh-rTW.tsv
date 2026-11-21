@@ -3113,3 +3113,7 @@ Show full names	顯示完整名稱
 A long name at the top of a post wraps onto the next line instead of ending in "...". A name that fits still takes one line.	貼文頂端的長名稱會換到下一行，而不是以「...」結尾。放得下的名稱仍只佔一行。
 Dark box behind feed video names	動態消息影片名稱的深色底框
 When a video in your feed has the poster's name on top of the video, that name sits on the same dark box. A change shows on the posts drawn after it.	當動態消息中的影片把發布者名稱顯示在影片上時，這個名稱也會顯示在同樣的深色底框上。變更會在之後載入的貼文上生效。
+# context: Accent color choice that follows the phone's wallpaper color
+Material You	Material You
+# context: summary of the Accent color row at the Material You choice
+Links, buttons, switches and the selected tab follow the accent color your phone takes from your wallpaper. Restart Facebook to see the change.	連結、按鈕、開關和選取的標籤頁會跟隨手機從桌布擷取的強調色。重新啟動 Facebook 以查看變更。

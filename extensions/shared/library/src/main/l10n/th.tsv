@@ -3109,3 +3109,7 @@ Show full names	แสดงชื่อเต็ม
 A long name at the top of a post wraps onto the next line instead of ending in "...". A name that fits still takes one line.	ชื่อยาวที่ด้านบนของโพสต์จะขึ้นบรรทัดใหม่แทนการลงท้ายด้วย "..." ส่วนชื่อที่พอดีจะยังอยู่ในบรรทัดเดียว
 Dark box behind feed video names	กล่องสีเข้มหลังชื่อบนวิดีโอในฟีด
 When a video in your feed has the poster's name on top of the video, that name sits on the same dark box. A change shows on the posts drawn after it.	เมื่อวิดีโอในฟีดข่าวแสดงชื่อของผู้โพสต์ทับอยู่บนวิดีโอ ชื่อนั้นจะอยู่บนกล่องสีเข้มเดียวกัน การเปลี่ยนแปลงจะเห็นในโพสต์ที่โหลดหลังจากนั้น
+# context: Accent color choice that follows the phone's wallpaper color
+Material You	Material You
+# context: summary of the Accent color row at the Material You choice
+Links, buttons, switches and the selected tab follow the accent color your phone takes from your wallpaper. Restart Facebook to see the change.	ลิงก์ ปุ่ม สวิตช์ และแท็บที่เลือกจะใช้สีเน้นที่โทรศัพท์ของคุณดึงมาจากวอลเปเปอร์ รีสตาร์ท Facebook เพื่อดูการเปลี่ยนแปลง

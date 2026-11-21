@@ -4,6 +4,12 @@
  */
 package app.morphe.extension.facebook.theme;
 
+import android.content.ComponentCallbacks;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.os.Build;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.lang.reflect.Field;
@@ -61,6 +67,12 @@ public final class AccentColor {
     /** The accents on offer, each a hue in LCh and the chroma it's drawn at when sRGB has room for it. */
     public enum Preset {
         FACEBOOK("facebook", 0, 0),
+        /**
+         * The accent Android's Material You takes from the phone's wallpaper, on Android 12 and
+         * newer. Its tones are the phone's own accent family rather than a fixed hue, so it follows
+         * a new wallpaper. On Android 11, which has no wallpaper palette, it changes nothing.
+         */
+        WALLPAPER("wallpaper", 0, 0),
         TEAL("teal", 200, 45),
         GREEN("green", 150, 50),
         PURPLE("purple", 315, 55),
@@ -289,12 +301,13 @@ public final class AccentColor {
     static Preset pickedForMaterialYou() {
         if (!SettingsStatus.accentColor() || !Utils.settingsReady()) return null;
         Preset preset = Settings.ACCENT_COLOR.get();
-        return preset == Preset.FACEBOOK || !usable(preset) ? null : preset;
+        // The wallpaper choice is what Material You already draws with, so it has nothing to override.
+        return preset == Preset.FACEBOOK || preset == Preset.WALLPAPER || !usable(preset) ? null : preset;
     }
 
     /** {@code wallpaper} with {@code preset}'s tones as its accent and its own greys, or as it is for no preset. */
     static TonePalette onWallpaper(TonePalette wallpaper, @Nullable Preset preset) {
-        if (preset == null || preset == Preset.FACEBOOK) return wallpaper;
+        if (preset == null || preset == Preset.FACEBOOK || preset == Preset.WALLPAPER) return wallpaper;
         return wallpaper.withAccent(palette(preset).family(TonePalette.ACCENT));
     }
 
@@ -389,6 +402,7 @@ public final class AccentColor {
 
     /** The preset's tones, L* 0 to 100 in steps of ten, as a palette whose accent family is the ramp. */
     static synchronized TonePalette palette(Preset preset) {
+        if (preset == Preset.WALLPAPER) return wallpaperPalette();
         if (preset == Preset.CUSTOM) return customPalette();
         TonePalette palette = PALETTES.get(preset);
         if (palette == null) {
@@ -400,6 +414,73 @@ public final class AccentColor {
             PALETTES.put(preset, palette);
         }
         return palette;
+    }
+
+    /** Whether this Android has the wallpaper palette Material You reads: Android 12 and newer. */
+    public static boolean wallpaperAvailable() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+    }
+
+    /** The phone's wallpaper palette, read when the Material You choice is first used. */
+    private static volatile TonePalette wallpaper;
+
+    /** Whether the application's configuration changes are watched for a new wallpaper palette. */
+    private static volatile boolean wallpaperWatched;
+
+    /**
+     * The phone's own accent family, as Material You gives it, for {@link Preset#WALLPAPER}. It is
+     * read once and again when the configuration changes, which is how Android delivers a new
+     * wallpaper palette. Android 11 has no such palette, so the fixed one stands in and the choice
+     * changes nothing.
+     */
+    static TonePalette wallpaperPalette() {
+        if (!wallpaperAvailable() || !Utils.settingsReady()) return TonePalette.fallback();
+        TonePalette known = wallpaper;
+        if (known != null) return known;
+        synchronized (AccentColor.class) {
+            if (wallpaper == null) {
+                wallpaper = readWallpaperPalette();
+                watchWallpaper();
+            }
+            return wallpaper;
+        }
+    }
+
+    private static TonePalette readWallpaperPalette() {
+        Context context = Utils.getContext();
+        return context == null ? TonePalette.fallback() : TonePalette.of(context);
+    }
+
+    /** Package-visible for tests: puts a wallpaper palette in use without a phone's resources. */
+    static synchronized void useWallpaperForTests(TonePalette palette) {
+        wallpaper = palette;
+        wallpaperWatched = true;
+    }
+
+    /** Package-visible for tests: drops the palette the test put in use. */
+    static synchronized void forgetWallpaperForTests() {
+        wallpaper = null;
+        wallpaperWatched = false;
+    }
+
+    /** Reads the phone's palette again whenever Android says the configuration, and a wallpaper, changed. */
+    private static synchronized void watchWallpaper() {
+        if (wallpaperWatched) return;
+        Context context = Utils.getContext();
+        if (context == null) return;
+        Context app = context.getApplicationContext();
+        (app == null ? context : app).registerComponentCallbacks(new ComponentCallbacks() {
+            @Override
+            public void onConfigurationChanged(@NonNull Configuration configuration) {
+                wallpaper = readWallpaperPalette();
+                AccentResources.forgetWallpaper();
+            }
+
+            @Override
+            public void onLowMemory() {
+            }
+        });
+        wallpaperWatched = true;
     }
 
     /** The custom color the last {@link #customPalette} was built from, and that palette. */
@@ -446,6 +527,7 @@ public final class AccentColor {
     /** Whether {@code preset} changes anything: Facebook blue never does, Custom only with a color saved. */
     static boolean usable(Preset preset) {
         if (preset == Preset.FACEBOOK) return false;
+        if (preset == Preset.WALLPAPER) return wallpaperAvailable();
         return preset != Preset.CUSTOM || customColour() != null;
     }
 

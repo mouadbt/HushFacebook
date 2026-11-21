@@ -3109,3 +3109,7 @@ Show full names	Tampilkan nama lengkap
 A long name at the top of a post wraps onto the next line instead of ending in "...". A name that fits still takes one line.	Nama panjang di bagian atas postingan berlanjut ke baris berikutnya, bukan terpotong dengan "...". Nama yang muat tetap satu baris.
 Dark box behind feed video names	Kotak gelap di belakang nama pada video Kabar Beranda
 When a video in your feed has the poster's name on top of the video, that name sits on the same dark box. A change shows on the posts drawn after it.	Saat video di Kabar Beranda menampilkan nama pemosting di atas video, nama itu tampil di atas kotak gelap yang sama. Perubahan terlihat pada postingan yang dimuat setelahnya.
+# context: Accent color choice that follows the phone's wallpaper color
+Material You	Material You
+# context: summary of the Accent color row at the Material You choice
+Links, buttons, switches and the selected tab follow the accent color your phone takes from your wallpaper. Restart Facebook to see the change.	Tautan, tombol, sakelar, dan tab yang dipilih mengikuti warna aksen yang diambil ponselmu dari wallpaper. Mulai ulang Facebook untuk melihat perubahannya.
