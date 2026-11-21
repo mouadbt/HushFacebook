@@ -46,7 +46,8 @@ public class AccentWallpaperTest {
 
         assertEquals(AccentColor.Preset.WALLPAPER, AccentColor.chosen());
         for (int blue : new int[]{0xFF0866FF, 0xFF1D85FC, 0xFF5AA7FF}) {
-            int themed = AccentColor.fds(blue, "ACCENT", AccentColor.Preset.WALLPAPER, true, true);
+            int themed = AccentColor.fds(blue, "PRIMARY_BUTTON_BACKGROUND",
+                    AccentColor.Preset.WALLPAPER, true, true);
             assertEquals(phone.sameLightness(TonePalette.ACCENT, blue), themed);
             assertEquals(TonePalette.lstar(blue), TonePalette.lstar(themed), 1.0);
         }
